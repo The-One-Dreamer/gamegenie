@@ -1,0 +1,504 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Game Suggester</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'game-primary': '#1A1A2E',
+                        'game-secondary': '#16213E',
+                        'game-accent': '#E94560',
+                        'game-success': '#0F3460',
+                        'game-bg': '#0F0F0F',
+                        'game-card': '#1E1E2E',
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 2s infinite',
+                        'bounce-subtle': 'bounce 1s infinite',
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-game-bg text-white font-inter overflow-hidden">
+    <!-- @COMPONENT: MainLayout -->
+    <div class="flex h-screen">
+        <!-- Sidebar Navigation -->
+        <!-- @COMPONENT: Sidebar -->
+        <div class="w-80 bg-game-primary border-r border-gray-700 flex flex-col">
+            <!-- Header -->
+            <div class="p-6 border-b border-gray-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-game-accent to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-gamepad text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold">AI Game Suggester</h1>
+                        <p class="text-sm text-gray-400">Powered by Claude 4</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Chat Button -->
+            <div class="p-4">
+                <button data-event="click:startNewChat" class="w-full bg-game-accent hover:bg-red-600 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2">
+                    <i class="fas fa-plus"></i>
+                    <span>New Game Search</span>
+                </button>
+            </div>
+
+            <!-- Chat History -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-2">
+                <h3 class="text-sm font-medium text-gray-400 mb-3">Recent Searches</h3>
+                
+                <!-- @MAP: chatHistory.map(chat => ( -->
+                <div class="bg-game-secondary hover:bg-game-card rounded-lg p-3 cursor-pointer transition-colors group" data-mock="true">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-game-success rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-clock text-xs"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-medium text-white truncate group-hover:text-game-accent transition-colors" data-bind="chat.title">Racing games for PC</h4>
+                            <p class="text-xs text-gray-400 mt-1" data-bind="chat.timestamp">2 hours ago</p>
+                            <div class="flex flex-wrap gap-1 mt-2">
+                                <span class="text-xs bg-blue-900 text-blue-300 px-2 py-1 rounded" data-bind="chat.platform">PC</span>
+                                <span class="text-xs bg-green-900 text-green-300 px-2 py-1 rounded" data-bind="chat.genre">Racing</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-game-secondary hover:bg-game-card rounded-lg p-3 cursor-pointer transition-colors group" data-mock="true">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-game-success rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-clock text-xs"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-medium text-white truncate group-hover:text-game-accent transition-colors" data-bind="chat.title">Indie puzzle games</h4>
+                            <p class="text-xs text-gray-400 mt-1" data-bind="chat.timestamp">1 day ago</p>
+                            <div class="flex flex-wrap gap-1 mt-2">
+                                <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded" data-bind="chat.platform">Mobile</span>
+                                <span class="text-xs bg-yellow-900 text-yellow-300 px-2 py-1 rounded" data-bind="chat.genre">Puzzle</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-game-secondary hover:bg-game-card rounded-lg p-3 cursor-pointer transition-colors group" data-mock="true">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-game-success rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-clock text-xs"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-sm font-medium text-white truncate group-hover:text-game-accent transition-colors" data-bind="chat.title">Co-op RPG games</h4>
+                            <p class="text-xs text-gray-400 mt-1" data-bind="chat.timestamp">3 days ago</p>
+                            <div class="flex flex-wrap gap-1 mt-2">
+                                <span class="text-xs bg-green-900 text-green-300 px-2 py-1 rounded" data-bind="chat.platform">Console</span>
+                                <span class="text-xs bg-red-900 text-red-300 px-2 py-1 rounded" data-bind="chat.genre">RPG</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_MAP )) -->
+            </div>
+
+            <!-- Settings -->
+            <div class="p-4 border-t border-gray-700">
+                <button class="flex items-center space-x-3 text-gray-400 hover:text-white transition-colors w-full text-left">
+                    <i class="fas fa-cog"></i>
+                    <span class="text-sm">Settings</span>
+                </button>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: Sidebar -->
+
+        <!-- Main Chat Area -->
+        <!-- @COMPONENT: ChatArea -->
+        <div class="flex-1 flex flex-col">
+            <!-- Chat Header -->
+            <div class="bg-game-primary border-b border-gray-700 p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl font-semibold">Game Suggestions</h2>
+                        <p class="text-sm text-gray-400">Ask me about any game you'd like to discover!</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <!-- @STATE: apiStatus:string = 'connected' -->
+                        <div class="flex items-center space-x-2 text-green-400">
+                            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse-slow"></div>
+                            <span class="text-xs">Claude 4 Connected</span>
+                        </div>
+                        <button class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-6" id="chatMessages">
+                <!-- Welcome Message -->
+                <div class="flex items-start space-x-4">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-white text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="bg-game-card rounded-2xl rounded-tl-md p-4 max-w-2xl">
+                            <p class="text-gray-300">👋 Welcome to AI Game Suggester! I'm powered by Claude 4, the most advanced AI for game recommendations in 2025.</p>
+                            <p class="text-gray-300 mt-2">Tell me what kind of game you're looking for - I can help with platforms, genres, mood, or even specific features you want!</p>
+                            <div class="flex flex-wrap gap-2 mt-4">
+                                <button class="bg-game-success hover:bg-blue-600 text-white text-xs px-3 py-1.5 rounded-full transition-colors" data-event="click:sendPrompt" data-prompt="Suggest a relaxing indie game for PC">
+                                    <i class="fas fa-leaf mr-1"></i>Relaxing indie games
+                                </button>
+                                <button class="bg-game-success hover:bg-blue-600 text-white text-xs px-3 py-1.5 rounded-full transition-colors" data-event="click:sendPrompt" data-prompt="What are the best multiplayer games right now?">
+                                    <i class="fas fa-users mr-1"></i>Multiplayer hits
+                                </button>
+                                <button class="bg-game-success hover:bg-blue-600 text-white text-xs px-3 py-1.5 rounded-full transition-colors" data-event="click:sendPrompt" data-prompt="Recommend horror games for Halloween">
+                                    <i class="fas fa-ghost mr-1"></i>Horror games
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">Claude 4 • Just now</p>
+                    </div>
+                </div>
+
+                <!-- User Message Example -->
+                <div class="flex items-start space-x-4 justify-end" data-mock="true">
+                    <div class="flex-1 flex justify-end">
+                        <div class="bg-game-accent rounded-2xl rounded-tr-md p-4 max-w-2xl">
+                            <p class="text-white" data-bind="userMessage.content">I'm looking for a racing game for PC that has offline mode and great graphics. Something similar to Forza but available on Steam.</p>
+                        </div>
+                    </div>
+                    <div class="w-10 h-10 bg-gradient-to-r from-game-accent to-red-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-user text-white text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- AI Response with Game Suggestions -->
+                <div class="flex items-start space-x-4" data-mock="true">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-white text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="bg-game-card rounded-2xl rounded-tl-md p-4 max-w-4xl">
+                            <p class="text-gray-300 mb-4">Perfect! Here are some excellent racing games for PC with offline mode and stunning graphics:</p>
+                            
+                            <!-- Game Suggestions Cards -->
+                            <div class="space-y-4">
+                                <!-- Game 1 -->
+                                <div class="bg-game-secondary rounded-xl p-4 hover:bg-gray-700 transition-colors">
+                                    <div class="flex items-start space-x-4">
+                                        <!-- Colorful racing game screenshot showing a sports car on a scenic mountain road -->
+                                        <img src="https://pixabay.com/get/g41ba170b429825a95a57910a85bbe727756f50f85f06b5aec1771be25400525988e56b0cb5e64daabe2c4850007cefab4d8f903ace2e5efca89456eeb996b764_1280.jpg" alt="Racing game screenshot" class="w-20 h-14 rounded-lg object-cover flex-shrink-0">
+                                        <div class="flex-1">
+                                            <h4 class="font-semibold text-white text-lg">Dirt Rally 2.0</h4>
+                                            <p class="text-sm text-gray-400 mt-1">Realistic rally racing with stunning environments and weather effects. Full offline career mode.</p>
+                                            <div class="flex items-center space-x-4 mt-3">
+                                                <div class="flex items-center space-x-1">
+                                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                    <span class="text-sm text-gray-300">4.2/5</span>
+                                                </div>
+                                                <span class="text-xs bg-blue-900 text-blue-300 px-2 py-1 rounded">PC</span>
+                                                <span class="text-xs bg-green-900 text-green-300 px-2 py-1 rounded">Racing</span>
+                                                <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded">$29.99</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Game 2 -->
+                                <div class="bg-game-secondary rounded-xl p-4 hover:bg-gray-700 transition-colors">
+                                    <div class="flex items-start space-x-4">
+                                        <!-- Modern sports car racing on a professional race track -->
+                                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80" alt="Racing game screenshot" class="w-20 h-14 rounded-lg object-cover flex-shrink-0">
+                                        <div class="flex-1">
+                                            <h4 class="font-semibold text-white text-lg">Assetto Corsa Competizione</h4>
+                                            <p class="text-sm text-gray-400 mt-1">Premium GT racing simulation with photorealistic graphics and authentic car physics.</p>
+                                            <div class="flex items-center space-x-4 mt-3">
+                                                <div class="flex items-center space-x-1">
+                                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                    <span class="text-sm text-gray-300">4.5/5</span>
+                                                </div>
+                                                <span class="text-xs bg-blue-900 text-blue-300 px-2 py-1 rounded">PC</span>
+                                                <span class="text-xs bg-green-900 text-green-300 px-2 py-1 rounded">Simulation</span>
+                                                <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded">$39.99</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Game 3 -->
+                                <div class="bg-game-secondary rounded-xl p-4 hover:bg-gray-700 transition-colors">
+                                    <div class="flex items-start space-x-4">
+                                        <!-- Street racing scene with neon lights and urban environment -->
+                                        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=120&h=80" alt="Racing game screenshot" class="w-20 h-14 rounded-lg object-cover flex-shrink-0">
+                                        <div class="flex-1">
+                                            <h4 class="font-semibold text-white text-lg">The Crew 2</h4>
+                                            <p class="text-sm text-gray-400 mt-1">Open-world racing across America with cars, boats, and planes. Massive offline content.</p>
+                                            <div class="flex items-center space-x-4 mt-3">
+                                                <div class="flex items-center space-x-1">
+                                                    <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                                    <span class="text-sm text-gray-300">4.0/5</span>
+                                                </div>
+                                                <span class="text-xs bg-blue-900 text-blue-300 px-2 py-1 rounded">PC</span>
+                                                <span class="text-xs bg-green-900 text-green-300 px-2 py-1 rounded">Open World</span>
+                                                <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded">$19.99</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <p class="text-gray-400 text-sm mt-4">All of these games are available on Steam and offer excellent offline experiences. Would you like more details about any of these, or should I suggest games in a specific sub-genre?</p>
+                        </div>
+                        
+                        <!-- Follow-up Action Buttons -->
+                        <div class="flex flex-wrap gap-2 mt-4">
+                            <button class="bg-gray-700 hover:bg-gray-600 text-white text-xs px-3 py-2 rounded-full transition-colors flex items-center space-x-1" data-event="click:sendFollowUp" data-prompt="Tell me more about Dirt Rally 2.0">
+                                <i class="fas fa-info-circle"></i>
+                                <span>More about Dirt Rally 2.0</span>
+                            </button>
+                            <button class="bg-gray-700 hover:bg-gray-600 text-white text-xs px-3 py-2 rounded-full transition-colors flex items-center space-x-1" data-event="click:sendFollowUp" data-prompt="Any cheaper alternatives?">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span>Cheaper alternatives</span>
+                            </button>
+                            <button class="bg-gray-700 hover:bg-gray-600 text-white text-xs px-3 py-2 rounded-full transition-colors flex items-center space-x-1" data-event="click:sendFollowUp" data-prompt="Show me arcade-style racing games instead">
+                                <i class="fas fa-gamepad"></i>
+                                <span>Arcade-style instead</span>
+                            </button>
+                        </div>
+                        
+                        <p class="text-xs text-gray-500 mt-2">Claude 4 • 2 minutes ago</p>
+                    </div>
+                </div>
+
+                <!-- Loading State (Hidden by default) -->
+                <!-- @STATE: isLoading:boolean = false -->
+                <div class="flex items-start space-x-4 hidden" id="loadingMessage">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-white text-sm animate-pulse"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="bg-game-card rounded-2xl rounded-tl-md p-4 max-w-2xl">
+                            <div class="flex items-center space-x-3">
+                                <div class="flex space-x-1">
+                                    <div class="w-2 h-2 bg-game-accent rounded-full animate-bounce"></div>
+                                    <div class="w-2 h-2 bg-game-accent rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+                                    <div class="w-2 h-2 bg-game-accent rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                                </div>
+                                <p class="text-gray-400 text-sm">Claude 4 is thinking...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="border-t border-gray-700 bg-game-primary p-6">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex items-end space-x-4">
+                        <div class="flex-1">
+                            <div class="relative">
+                                <textarea 
+                                    id="messageInput"
+                                    placeholder="Ask for game recommendations... (e.g., 'Suggest horror games for Nintendo Switch')"
+                                    class="w-full bg-game-card border border-gray-600 rounded-2xl px-4 py-3 pr-12 text-white placeholder-gray-400 resize-none focus:outline-none focus:border-game-accent transition-colors"
+                                    rows="1"
+                                    data-implementation="Auto-resize textarea and handle Enter key for submission"
+                                ></textarea>
+                                <button class="absolute right-3 bottom-3 text-gray-400 hover:text-white transition-colors">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Quick Suggestion Pills -->
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                <button class="bg-gray-700 hover:bg-gray-600 text-white text-xs px-3 py-1.5 rounded-full transition-colors" data-event="click:insertPrompt" data-prompt="Best new games released this month">
+                                    <i class="fas fa-fire mr-1"></i>New releases
+                                </button>
+                                <button class="bg-gray-700 hover:bg-gray-600 text-white text-xs px-3 py-1.5 rounded-full transition-colors" data-event="click:insertPrompt" data-prompt="Free games that are actually good">
+                                    <i class="fas fa-gift mr-1"></i>Free games
+                                </button>
+                                <button class="bg-gray-700 hover:bg-gray-600 text-white text-xs px-3 py-1.5 rounded-full transition-colors" data-event="click:insertPrompt" data-prompt="Games similar to [insert game name]">
+                                    <i class="fas fa-search mr-1"></i>Similar to...
+                                </button>
+                                <button class="bg-gray-700 hover:bg-gray-600 text-white text-xs px-3 py-1.5 rounded-full transition-colors" data-event="click:insertPrompt" data-prompt="Co-op games for 2-4 players">
+                                    <i class="fas fa-users mr-1"></i>Co-op games
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button 
+                            id="sendButton"
+                            class="bg-game-accent hover:bg-red-600 disabled:bg-gray-700 disabled:cursor-not-allowed text-white p-3 rounded-xl transition-colors flex items-center justify-center"
+                            data-event="click:sendMessage"
+                            data-implementation="Should validate input and handle API submission"
+                        >
+                            <i class="fas fa-paper-plane text-lg"></i>
+                        </button>
+                    </div>
+                    
+                    <p class="text-xs text-gray-500 mt-3 text-center">
+                        Powered by Claude 4 • Your conversations are saved locally
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- @END_COMPONENT: ChatArea -->
+    </div>
+    <!-- @END_COMPONENT: MainLayout -->
+
+    <!-- Mobile Menu Toggle (Hidden on desktop) -->
+    <button class="fixed top-4 left-4 z-50 bg-game-accent text-white p-3 rounded-lg lg:hidden" id="mobileMenuToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Error Toast (Hidden by default) -->
+    <!-- @STATE: errorMessage:string = '' -->
+    <div class="fixed top-4 right-4 bg-red-600 text-white p-4 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50" id="errorToast">
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorMessage">Something went wrong. Please try again.</span>
+            <button class="ml-4 text-white hover:text-gray-200" onclick="hideError()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // TODO: Implement OpenAI API integration for Claude 4
+            // TODO: Implement SQLite local storage for chat history
+            // TODO: Add real-time message handling and conversation flow
+            
+            // Basic UI interactions for demo
+            let isLoading = false;
+            
+            function toggleMobileMenu() {
+                const sidebar = document.querySelector('.w-80');
+                sidebar.classList.toggle('-translate-x-full');
+            }
+            
+            function showError(message) {
+                const errorToast = document.getElementById('errorToast');
+                const errorMessage = document.getElementById('errorMessage');
+                errorMessage.textContent = message;
+                errorToast.classList.remove('translate-x-full');
+                
+                setTimeout(() => {
+                    errorToast.classList.add('translate-x-full');
+                }, 5000);
+            }
+            
+            function hideError() {
+                const errorToast = document.getElementById('errorToast');
+                errorToast.classList.add('translate-x-full');
+            }
+            
+            function autoResizeTextarea(textarea) {
+                textarea.style.height = 'auto';
+                textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+            }
+            
+            function showLoading() {
+                const loadingMessage = document.getElementById('loadingMessage');
+                loadingMessage.classList.remove('hidden');
+                loadingMessage.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            function hideLoading() {
+                const loadingMessage = document.getElementById('loadingMessage');
+                loadingMessage.classList.add('hidden');
+            }
+            
+            // Event listeners
+            document.getElementById('mobileMenuToggle')?.addEventListener('click', toggleMobileMenu);
+            
+            const messageInput = document.getElementById('messageInput');
+            messageInput?.addEventListener('input', function() {
+                autoResizeTextarea(this);
+            });
+            
+            messageInput?.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    // TODO: Send message
+                    console.log('Send message:', this.value);
+                }
+            });
+            
+            document.getElementById('sendButton')?.addEventListener('click', function() {
+                const input = document.getElementById('messageInput');
+                if (input.value.trim()) {
+                    console.log('Send message:', input.value);
+                    // TODO: Implement message sending logic
+                    showLoading();
+                    setTimeout(() => {
+                        hideLoading();
+                    }, 2000);
+                }
+            });
+            
+            // Handle quick suggestion buttons
+            document.querySelectorAll('[data-event="click:insertPrompt"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const prompt = this.getAttribute('data-prompt');
+                    const input = document.getElementById('messageInput');
+                    input.value = prompt;
+                    input.focus();
+                    autoResizeTextarea(input);
+                });
+            });
+            
+            // Handle prompt suggestion buttons
+            document.querySelectorAll('[data-event="click:sendPrompt"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const prompt = this.getAttribute('data-prompt');
+                    const input = document.getElementById('messageInput');
+                    input.value = prompt;
+                    // Simulate sending
+                    showLoading();
+                    setTimeout(() => {
+                        hideLoading();
+                    }, 2000);
+                });
+            });
+            
+            // Handle follow-up buttons
+            document.querySelectorAll('[data-event="click:sendFollowUp"]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const prompt = this.getAttribute('data-prompt');
+                    console.log('Follow-up question:', prompt);
+                    showLoading();
+                    setTimeout(() => {
+                        hideLoading();
+                    }, 1500);
+                });
+            });
+            
+            // Responsive sidebar for mobile
+            function handleResize() {
+                const sidebar = document.querySelector('.w-80');
+                if (window.innerWidth >= 1024) {
+                    sidebar.classList.remove('-translate-x-full');
+                } else {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            }
+            
+            window.addEventListener('resize', handleResize);
+            handleResize(); // Initial call
+        })();
+    </script>
+</body>
+</html>
